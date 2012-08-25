@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block main_title %}Warsow League{% endblock %} - {% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='bootstrap-responsive.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    {% block navbar %}
+    {% set navigation_bar = [
+    ('/', 'index', 'Home'),
+    ('/users', 'users', 'Users'),
+    ('/signups', 'signups', 'Sign-ups'),
+    ('/reset', 'reset', 'Reset'),
+    ] -%}
+    <div class="navbar">
+      <div class="navbar-inner">
+        <span class="brand" href="#">Warsow League</span>
+        <ul class="nav">
+          {% for href, id, caption in navigation_bar %}
+          <li{% if id == active_page %} class="active"{% endif
+          %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+          {% endfor %}
+          {% if current_user.is_authenticated() %}
+          <li {% if active_page == "logout" %} class="active"{% endif
+          %}><a href="{{ url_for('logout') }}">Logout</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.index') }}">Admin</a></li>
+          {% endif %}
+          {% else %}
+          <li {% if active_page == "login" %} class="active"{% endif
+          %}><a href="{{ url_for('login') }}">Login</a></li>
+          <li {% if active_page == "register" %} class="active"{% endif
+          %}><a href="{{ url_for('register') }}">Register</a></li>
+          {% endif %}
+        </ul>
+        {% if current_user.is_authenticated() %}
+        <p class="navbar-text pull-right">
+        Logged in as <a href="#" class="navbar-link">{{ current_user.name }}</a>
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    {% endblock %}
+
+    <div class="container-fluid">
+      <div class="row">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="span12 alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block alert %}
+        {% endblock %}
+
+        {% block sidebar %}
+        {% endblock %}
+
+        {% block body %}
+        {% endblock %}
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+      <p>&copy; Company 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+
+  </body>
+</html>

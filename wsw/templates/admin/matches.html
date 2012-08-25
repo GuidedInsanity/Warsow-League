@@ -1,0 +1,15 @@
+{% extends "admin/league.html" %}
+{% set active_page = "league" %}
+{% from "_formhelpers.html" import render_field %}
+{% block title %}Season {{ season.id }}{% endblock %}
+{% block body %}
+<div class="span9">
+  {% if not matches %}
+  <form class="well form-horizontal" method="post" action="{{ url_for(".matches", id=season.id) }}">
+    {% for field in form %}
+    {{ render_field(field) }}
+    {% endfor %}
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

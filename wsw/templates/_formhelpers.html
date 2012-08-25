@@ -1,0 +1,42 @@
+{% macro render_field(field) %}
+{% if field.type == "HiddenField" or field.type == "CSRFTokenField" %}
+  {{ field(**kwargs)|safe }}
+  {% elif field.type == "RadioField" %}
+  {% for choice in field %}
+  <label class="radio">
+    {{ choice }}
+    {{ choice.label.text }}
+  </label>
+  {% endfor %}
+{% else %}
+<div class="control-group">
+  {% if field.type == "BooleanField" %}
+  <div class="controls">
+    <label classs="checkbox">{{ field(**kwargs)|safe }} {{ field.label.text }}</label>
+  </div>
+  {% elif field.type == "SubmitField" %}
+  <div class="controls">
+    <input type="submit" id="{{ field.id }}" class="btn" value="{{ field.label.text }}">
+  </div>
+  {% else %}
+  <label class="control-label" for="{{ field.id }}">{{ field.label }}</label>
+  <div class="controls">
+    {{ field(**kwargs)|safe }}
+  </div>
+  {% endif %}
+  {% if field.errors %}
+  <div class="controls alet alert-error">
+    {% for error in field.errors %}
+    {{ error }}
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro render_form(form) %}
+{% for field in form %}
+{{ render_field(field) }}
+{% endfor %}
+{% endmacro %}

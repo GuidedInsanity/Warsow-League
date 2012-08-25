@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% set active_page = "register" %}
+{% block title %}Registration{% endblock %}
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<div class="span12">
+  <form class="well form-horizontal" method=post action="/register">
+      {{ form.hidden_tag() }}
+      {{ render_field(form.username) }}
+      {{ render_field(form.email) }}
+      {{ render_field(form.password) }}
+      {{ render_field(form.confirm) }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn">Register</button>
+        </div>
+      </div>
+  </form>
+</div>
+{% endblock %}
+

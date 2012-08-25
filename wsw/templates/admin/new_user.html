@@ -1,0 +1,17 @@
+{% extends "admin/users.html" %}
+{% set active_page = "users" %}
+{% set active_subpage = "new_user" %}
+{% block title %}Users{% endblock %}
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<form class="span9 well form-horizontal" method=post action="{{ url_for('.new_user') }}">
+  {{ form.hidden_tag() }}
+  {{ render_field(form.username) }}
+  {{ render_field(form.email) }}
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn">Create</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

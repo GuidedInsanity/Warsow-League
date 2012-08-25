@@ -1,0 +1,72 @@
+{% extends "admin/layout.html" %}
+{% set active_page = "users" %}
+{% set active_subpage = active_subpage|default("list") %}
+{% set navigation_list = [
+('.users', 'list', 'List'),
+('.new_user', 'new_user', 'New User'),
+] -%}
+{% block title %}Users{% endblock %}
+{% block sidebar %}
+<div class="span3">
+  <div class="well">
+    <ul class="nav nav-list">
+          {% for href, id, caption in navigation_list %}
+            <li{% if id == active_subpage %} class="active"{% endif
+            %}><a href="{{ url_for(href) }}">{{ caption|e }}</a></li>
+          {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
+{% block body %}
+<div class="span9">
+  <table class="well table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>E-mail</th>
+        <th>Admin</th>
+        <th>Activated</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          {% if user.is_admin %}
+          <form class="compact" method="post" action="{{ url_for('.demote_user', id=user.id) }}">
+            <button class="btn-link" type="submit">Yes</button>
+          </form>
+          {% else %}
+          <form class="compact" method="post" action="{{ url_for('.promote_user', id=user.id) }}">
+            <button class="btn-link" type="submit">No</button>
+          </form>
+          {% endif %}
+        </td>
+        <td>
+          {% if user.is_active %}
+          <form class="compact" method="post" action="{{ url_for('.deactivate_user', id=user.id) }}">
+            <button class="btn-link" type="submit">Yes</button>
+          </form>
+          {% else %}
+          <form class="compact" method="post" action="{{ url_for('.activate_user', id=user.id) }}">
+            <button class="btn-link" type="submit">No</button>
+          </form>
+          {% endif %}
+        </td>
+        <td>
+          <form class="compact" method="post" action="{{ url_for('.delete_user', id=user.id) }}">
+            <button class="btn-link" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

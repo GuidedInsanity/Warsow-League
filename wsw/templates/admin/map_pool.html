@@ -1,0 +1,42 @@
+{% extends "admin/league.html" %}
+{% set active_page = "league" %}
+{% from "_formhelpers.html" import render_form %}
+{% block title %}Season {{ season.id }}{% endblock %}
+{% block body %}
+<div class="span9">
+  {% if form.map_id.choices %}
+  <form class="form-inline well" method="post" action="{{
+    url_for(".map_pool", id=season.id) }}">
+    <h2>Add Map</h2>
+    {{ render_form(form) }}
+  </form>
+  {% endif %}
+  <table class="well table table-condensed">
+    <thead>
+      <tr>
+        <th>Id</td>
+        <th>Name</td>
+        <th>Levelshot</td>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for map in season.get_map_pool() %}
+      <tr>
+        <td>{{ map.id }}</td>
+        <td>{{ map.name }}</td>
+        <td><img class="small" src="{{ url_for('static', filename='img/levelshots/'+map.id+'.jpg') }}" /></td>
+        <td>
+          <form class="compact" method="post" action="{{ url_for('.remove_map_from_pool') }}">
+            {{ form.hidden_tag() }}
+            <input type="hidden" id="season_id" name="season_id" value="{{ season.id }}" />
+            <input type="hidden" id="map_id" name="map_id" value="{{ map.id }}" />
+            <button type="submit" class="btn-link">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

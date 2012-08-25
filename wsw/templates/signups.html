@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% set active_page = "signups" %}
+{% block title %}Sign-ups{% endblock %}
+{% block sidebar %}
+<div class="span3">
+    <div class="well">
+    {% if current_user.is_authenticated() %}
+    {% if signedup %}
+    <form class="" method="post" action="/unsignup">
+        <p><input type="submit" class="btn" value="Remove Signup"></p>
+    </form>
+    {% else %}
+    <form class="" method="post" action="/signup">
+        <p><input type="submit" class="btn" value="Signup"></p>
+    </form>
+    {% endif %}
+    {% endif %}
+        <ul class="nav nav-list">
+            {% if divisions %}
+            {% for div in divisions %}
+            <li class="nav-header">Division {{ div[0].division }}</li>
+            {% for player in div %}
+            <li>{{ player.username }}</li>
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
+{% block body %}
+<div class="span9">
+
+    <div class="well">
+        <h2>Waiting List</h2>
+        <ul>
+        {% for user in signups %}
+        <li>{{ user.username }}</li>
+        {% endfor %}
+    </ul>
+    </div>
+</div>
+{% endblock %}

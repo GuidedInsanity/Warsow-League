@@ -1,0 +1,33 @@
+{% extends "admin/layout.html" %}
+{% block title %}Maps{% endblock %}
+{% set active_page = "maps" %}
+{% block sidebar %}
+<div class="span3">
+  <div class="well">
+    <ul class="nav nav-list">
+    </ul>
+  </div>
+</div>
+{% endblock %}
+{% block body %}
+<div class="span9">
+  <table class="well table table-condensed">
+    <thead>
+      <tr>
+        <th>Id</td>
+        <th>Name</td>
+        <th>Levelshot</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for map in maps %}
+      <tr>
+        <td>{{ map.id }}</td>
+        <td>{{ map.name }}</td>
+        <td><img class="small" src="{{ url_for('static', filename='img/levelshots/'+map.id+'.jpg') }}" /></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

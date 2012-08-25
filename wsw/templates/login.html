@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% set active_page = "login" %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<div class="span12">
+    {% from "_formhelpers.html" import render_field %}
+    <form class="well form-horizontal" method=post action="/login">
+      {{ form.hidden_tag() }}
+        {{ render_field(form.username) }}
+        {{ render_field(form.password) }}
+      <div class="control-group">
+        <div class="controls">
+          <label class="checkbox">
+            <input id="login_remember" value="y" type="checkbox" name="login_remember"> Remember me
+          </label>
+          <button type="submit" class="btn">Login</button>
+        </div>
+      </div>
+    </form>
+</div>
+{% endblock %}

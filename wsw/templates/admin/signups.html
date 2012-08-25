@@ -1,0 +1,20 @@
+{% extends "admin/league.html" %}
+{% set active_page = "league" %}
+{% from "_formhelpers.html" import render_form %}
+{% block title %}Season {{ season.id }}{% endblock %}
+{% block body %}
+<div class="span9">
+  {% if add_user_form.user_id.data %}
+  <form class="well fomr-inline" method="post" action="{{ url_for(".add_signup") }}">
+    {{ render_form(add_user_form) }}
+  </form>
+  {% endif %}
+
+  {% if form.user_id.choices %}
+  <form class="well" method="post" action="{{ url_for(".signups", id=season.id) }}">
+    {{ render_form(form) }}
+  </form>
+  {% endif %}
+</div> 
+
+{% endblock %}

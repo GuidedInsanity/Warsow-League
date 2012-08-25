@@ -1,0 +1,12 @@
+.compact {
+  margin: 0;
+}
+
+.small {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+input#division {
+  width: 25px;
+}
