@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from flask import Blueprint
 from flask import redirect, request, g, flash, render_template, url_for
 from flask.ext.login import current_user
 from flask.ext.wtf import (Form, BooleanField, TextField, HiddenField,
-        IntegerField, validators, SelectField, SubmitField, DateField,
-        SelectMultipleField, RadioField)
+        IntegerField, validators, SelectField, SubmitField,
+        SelectMultipleField, RadioField, DateTimeField)
 
 from wsw.forms import is_unique
 from wsw.league import Season
@@ -134,11 +136,9 @@ class NewMapForm(Form):
 
 class GenerateMatchesForm(Form):
     season_id = HiddenField(validators=[validators.Required()])
-    games_per_match = IntegerField(validators=[validators.Required()])
+    maps = IntegerField(validators=[validators.Required()])
+    first_default_time = DateTimeField(default=datetime.now())
     interval = SelectField(choices=[('d', 'Daily'), ('w', 'Weekly')],
-            validators=[validators.Required()])
-
-    schedule = SelectField(choices=[('rr', 'Round Robin')],
             validators=[validators.Required()])
     submit = SubmitField("Generate")
 
@@ -346,8 +346,16 @@ def set_division():
 def matches(id):
     form = GenerateMatchesForm(request.form)
     if request.method == 'POST' and form.validate_on_submit():
-        # TODO generate matches
-        pass
+        season = Season(form.season_id.data)
+        maps = form.maps.data
+        interval = form.interval.data
+        start = form.first_default_time.data
+
+        for division in season.get_division_numbers():
+            if season.create_matches(division, maps, start, interval):
+                flash("Generated matches for division " + str(division))
+            else:
+                flash("Failed to generate matches for division " + str(division))
 
     season = Season(id)
     season.load()
@@ -356,7 +364,8 @@ def matches(id):
 
     divisions = get_divisions(season)
 
-    return render_template("admin/matches.html", season=season, form=form)
+    return render_template("admin/matches.html", season=season, form=form,
+            matches=season.get_matches())
 
 @admin.route("/generate_matches", methods=['POST'])
 def generate_matches():

@@ -50,6 +50,7 @@ drop table if exists matches;
 create table matches (
     id integer not null primary key autoincrement,
     season_id integer not null,
+    round integer default null,
     scheduled integer defeault null,
     locked integer default 0,
     played integer default 0,
@@ -72,10 +73,10 @@ create table match_players (
 drop table if exists results;
 create table results (
     match_id integer not null,
-    game_number integer not null,
+    game_id integer not null,
     map_id string default null,
     alpha_score default null,
     beta_score default null,
     FOREIGN KEY(match_id) REFERENCES matches(id) ON DELETE CASCADE,
-    PRIMARY KEY(map_id, game_number)
+    PRIMARY KEY(map_id, game_id)
 );

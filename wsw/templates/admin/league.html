@@ -5,48 +5,50 @@
 {% block title %}League{% endblock %}
 {% block sidebar %}
 <div class="span3">
-  <div class="well">
-    <ul class="nav nav-list">
+    <div class="well">
+        <ul class="nav nav-list">
 
-      <li class="nav-header">Seasons</li>
-      {% for s in season.get_seasons_list() %}
-      <li {% if s.id == active_season %} class="active"{% endif
-      %}><a href="{{ url_for(".signups", id=s.id) }}">Season {{ s.id }}</a></li>
-      {% endfor %}
+            <li class="nav-header">Seasons</li>
+            {% for s in season.get_seasons_list() %}
+            <li {% if s.id == active_season %} class="active"{% endif
+            %}><a href="{{ url_for(".signups", id=s.id) }}">Season {{ s.id }}</a></li>
+            {% endfor %}
 
-      <li class="nav-header">Season {{ season.id }}</li>
-      <li><a href="{{ url_for(".signups", id=season.id) }}">Signups</a></li>
-      <li><a href="{{ url_for(".rules", id=season.id) }}">Rules</a></li>
-      <li><a href="{{ url_for(".map_pool", id=season.id) }}">Map Pool</a></li>
-      <li><a href="{{ url_for(".matches", id=season.id) }}">Matches</a></li>
+            <li class="nav-header">Season {{ season.id }}</li>
+            <li><a href="{{ url_for(".signups", id=season.id) }}">Signups</a></li>
+            <li><a href="{{ url_for(".rules", id=season.id) }}">Rules</a></li>
+            <li><a href="{{ url_for(".map_pool", id=season.id) }}">Map Pool</a></li>
+            <li><a href="{{ url_for(".matches", id=season.id) }}">Matches</a></li>
 
-      {% for div in season.get_divisions() %}
-      <li class="nav-header">Division {{ div[0].division }}</li>
-      <li>
-      <table class="table table-condensed">
-        <tbody>
-          {% for player in div %}
-          <tr>
-            <td>0</td>
-            <td>{{ player.username }}</td>
-            <td>
-              <form class="compact form-inline" method="post" action="{{
-                url_for(".remove_from_division") }}">
-                {{ form.csrf_token }}
-                <input type="hidden" name="season_id" value="{{ season.id }}" />
-                <input type="hidden" name="user_id" value="{{ player.id }}" />
-                <input type="submit" class="btn-link pull-right" value="X" />
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      </li>
-      {% endfor %}
+            {% if season.get_divisions() %}
+            {% for div in season.get_divisions() %}
+            <li class="nav-header">Division {{ div[0].division }}</li>
+            <li>
+            <table class="table table-condensed">
+                <tbody>
+                    {% for player in div %}
+                    <tr>
+                        <td>0</td>
+                        <td>{{ player.username }}</td>
+                        <td>
+                            <form class="compact form-inline" method="post" action="{{
+                                url_for(".remove_from_division") }}">
+                                {{ form.csrf_token }}
+                                <input type="hidden" name="season_id" value="{{ season.id }}" />
+                                <input type="hidden" name="user_id" value="{{ player.id }}" />
+                                <input type="submit" class="btn-link pull-right" value="X" />
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </li>
+            {% endfor %}
+            {% endif %}
 
-    </ul>
-  </div>
+        </ul>
+    </div>
 </div>
 {% endblock %}
 {% block body %}
