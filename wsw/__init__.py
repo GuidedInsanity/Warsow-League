@@ -29,8 +29,7 @@ def before_request():
     g.db.execute(query)
 
 
-@app.context_processor
-def inject_my_matches():
+def match_link():
     if current_user.is_authenticated():
         season_id = Season.get_current_season_id()
         query = """
@@ -40,9 +39,43 @@ def inject_my_matches():
         AND user_id = ?
         """
         result = query_db(query, (season_id, current_user.get_id()), True)
-        if result:
-            return dict(my_matches=result['count'])
-    return dict(my_matches=None)
+        if result['count']:
+            return ('matches/my', 'matches', "Matches (%i)" % result['count'])
+
+    return ('/matches', 'matches', "Matches")
+
+def season_link():
+    query = """
+    SELECT id FROM seasons
+    ORDER BY id DESC
+    """
+    cur = g.db.execute(query)
+    seasons = (x[0] for x in cur.fetchall())
+    links = []
+    for season_id in seasons:
+        links = links + [(url_for('season', id=season_id), 'season', 'Season %i'%season_id)]
+    return ('/', 'season', "Season %i" % Season.get_current_season_id())
+
+@app.context_processor
+def inject_navigation():
+    menu = [
+            ('/', 'index', 'Home'),
+            season_link(),
+            ('/users', 'users', 'Users'),
+            ('/signups', 'signups', 'Sign-ups'),
+            match_link(),
+            ('/reset', 'reset', 'Reset'),
+            ]
+    if current_user.is_authenticated():
+        menu = menu + [('/logout', 'logout', 'Logout')]
+        if current_user.is_admin():
+            menu = menu + [('/admin', 'admin', 'Admin')]
+    else:
+        menu = menu + [
+                ('/login', 'login', 'Login'),
+                ('/register', 'register', 'Register')
+                ]
+    return dict(navigation_bar=menu)
 
 
 @app.teardown_request
@@ -71,7 +104,6 @@ login_manager.anonymous_user = Anonymous
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
-
 
 def get_connection():
     db = getattr(g, 'db', None)
@@ -128,9 +160,9 @@ def get_admin_menu():
     menu = [
             {'label':'Back', 'url':url_for('index'), 'path':''},
             {'label':'Dashboard', 'url':url_for('admin.dashboard'),
-                 'path':'/'},
+                'path':'/'},
             {'label':'League', 'url':url_for('admin.league'),
-                 'path':'/league'},
+                'path':'/league'},
             {'label':'Users', 'url':url_for('admin.users'), 'path':'/users'},
             ]
     return menu
