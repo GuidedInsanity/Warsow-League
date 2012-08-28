@@ -51,6 +51,7 @@ create table matches (
     id integer not null primary key autoincrement,
     season_id integer not null,
     round integer default null,
+    division integer default null,
     scheduled integer defeault null,
     locked integer default 0,
     played integer default 0,

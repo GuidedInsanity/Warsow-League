@@ -17,7 +17,8 @@ class Season:
         from wsw import query_db
         query = """
         SELECT matches.id, auser.id, auser.username, buser.id, buser.username,
-        scheduled FROM matches
+        scheduled, round, division 
+        FROM matches
         LEFT JOIN match_players AS alpha 
         ON alpha.match_id = matches.id AND alpha.alpha = 1
         LEFT JOIN users AS auser ON auser.id = alpha.user_id
@@ -25,6 +26,7 @@ class Season:
         ON beta.match_id = matches.id AND beta.alpha = 0
         LEFT JOIN users AS buser ON buser.id = beta.user_id
         WHERE season_id = ?
+        ORDER BY round ASC, division ASC, scheduled ASC
         """
         values = (self.id)
         cur = g.db.execute(query, values)
@@ -33,6 +35,8 @@ class Season:
             match = {
                     'id' : row[0],
                     'scheduled' : row[5],
+                    'round' : row[6],
+                    'division' : row[7],
                     'alpha' : {
                         'id' : row[1],
                         'username' : row[2]
@@ -88,12 +92,12 @@ class Season:
             for match in s[round]:
                 # Match
                 query = """
-                INSERT INTO matches(season_id, scheduled, round)
-                VALUES(?, ?, ?)
+                INSERT INTO matches(season_id, scheduled, division, round)
+                VALUES(?, ?, ?, ?)
                 """
 
                 scheduled = start + (round * td)
-                values = (self.id, scheduled, round)
+                values = (self.id, scheduled, division_number, round)
                 cur = g.db.execute(query, values)
                 if not cur.rowcount:
                     # TODO log
