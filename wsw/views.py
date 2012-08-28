@@ -140,6 +140,15 @@ def usnignup():
     return redirect(request.referrer)
 
 
+@app.route("/matches")
+def matches():
+    return render_template("matches.html")
+
+@app.route("/matches/my")
+def my_matches():
+    return render_template("matches.html")
+
+
 @app.route("/signups/")
 def signups():
     season_id = Season.get_current_season_id()

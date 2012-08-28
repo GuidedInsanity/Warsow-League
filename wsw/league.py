@@ -2,7 +2,6 @@ from flask import g
 from datetime import timedelta
 
 
-
 class Season:
 
     id = None

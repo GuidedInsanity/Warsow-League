@@ -1,3 +1,8 @@
+{% if my_matches %}
+{% set match_link = ('/matches/my', 'matches', "Matches (%i)"|format(my_matches)) -%}
+{% else %}
+{% set match_link = ('/matches', 'matches', "Matches") -%}
+{% endif %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,6 +25,7 @@
     ('/', 'index', 'Home'),
     ('/users', 'users', 'Users'),
     ('/signups', 'signups', 'Sign-ups'),
+    match_link,
     ('/reset', 'reset', 'Reset'),
     ] -%}
     <div class="navbar">

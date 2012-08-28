@@ -34,15 +34,16 @@ def inject_my_matches():
     if current_user.is_authenticated():
         season_id = Season.get_current_season_id()
         query = """
-        SELECT COUNT(*) as count FROM matches
-        LEFT JOIN match_players ON match_id = matches.id
+        SELECT COUNT(*) as count FROM match_players
+        LEFT JOIN matches ON matches.id = match_id
         WHERE season_id = ?
         AND user_id = ?
+        GROUP BY matches.id
         """
         result = query_db(query, (season_id, current_user.get_id()), True)
         if result:
             return dict(my_matches=result['count'])
-    return dict(my_matches=None)
+    return None
 
 
 @app.teardown_request
